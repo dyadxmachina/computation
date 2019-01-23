@@ -4,7 +4,7 @@
 # Created by: Kevin Luu <luuk> and Jenna Wiens <jwiens>
 #
 #
-
+import os 
 import random
 import string
 
@@ -20,7 +20,10 @@ SCRABBLE_LETTER_VALUES = {
 # Helper code
 # (you don't need to understand this helper code)
 
-WORDLIST_FILENAME = "words.txt"
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+
+WORDLIST_FILENAME = dir_path + "/" + "words.txt"
 
 def load_words():
     """
