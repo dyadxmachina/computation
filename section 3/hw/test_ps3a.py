@@ -14,6 +14,7 @@ def test_deal_hand():
     hand = deal_hand(HAND_SIZE)
     if not type(hand) is dict:
         print "FAILURE: test_deal_hand()"
+        
         print "\tUnexpected return type:", type(hand)
         
         return # exit function

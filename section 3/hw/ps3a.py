@@ -80,6 +80,19 @@ def get_word_score(word, n):
     returns: int >= 0
     """
     # TO DO...
+    letters = 0
+    for l in word:
+        if l in SCRABBLE_LETTER_VALUES.keys():
+            letters += SCRABBLE_LETTER_VALUES[l]
+    # print(letters)
+    if len(word) == n: 
+        word_score = letters*len(word) + 50
+    else:
+        word_score = letters*len(word)
+
+
+    return word_score 
+    
     
 #
 # Make sure you understand how this function works and what it does!
@@ -149,6 +162,14 @@ def update_hand(hand, word):
     returns: dictionary (string -> int)
     """
     # TO DO ...
+    new_hand = hand
+    for l in word: 
+        current_score = hand.get(l, 0) - 1
+        # if l in hand.keys(): 
+        new_hand[l] = current_score
+       
+    return new_hand
+
 
 #
 # Problem #3: Test word validity
@@ -164,6 +185,17 @@ def is_valid_word(word, hand, word_list):
     word_list: list of lowercase strings
     """
     # TO DO...
+    letter_list = []
+    for letter in hand.keys():
+        for j in range(hand[letter]):
+            letter_list.append(j)
+    if word in word_list:
+        if list(word).sort() in letter_list.sort():
+            # lt_ct = hand.get(l, False)
+            # if lt_ct: 
+                return True
+            # else:
+    return False  
 
 def calculate_handlen(hand):
     handlen = 0
