@@ -164,7 +164,7 @@ def update_hand(hand, word):
     # TO DO ...
     new_hand = hand
     for l in word: 
-        current_score = hand.get(l, 0) - 1
+        current_score = new_hand[l] - 1
         # if l in hand.keys(): 
         new_hand[l] = current_score
        
@@ -185,17 +185,19 @@ def is_valid_word(word, hand, word_list):
     word_list: list of lowercase strings
     """
     # TO DO...
-    letter_list = []
-    for letter in hand.keys():
-        for j in range(hand[letter]):
-            letter_list.append(j)
-    if word in word_list:
-        if list(word).sort() in letter_list.sort():
-            # lt_ct = hand.get(l, False)
-            # if lt_ct: 
-                return True
-            # else:
-    return False  
+    hand_temp = hand
+    if word not in word_list: 
+        return False
+    
+    for l in word:
+        if l in hand_temp.keys(): 
+            if hand_temp[l] !=  0: 
+                hand_temp[l] -= 1
+            else: 
+                return False
+        else: 
+            return False  
+    return True
 
 def calculate_handlen(hand):
     handlen = 0
@@ -235,8 +237,25 @@ def play_hand(hand, word_list):
       
     """
     # TO DO ...
+    ts = 0 
+    # display_hand(hand)
+    # word = str(raw_input('Enter word, or a "." to indicates that you are finished: '))  
+    #print(word)  
+    while sum(hand.values()) and word != '.':
+        display_hand(hand)
+        word = str(raw_input('Enter word, or a "." to indicates that you are finished: '))
 
-#
+        if is_valid_word(word, hand, word_list):
+            hand = update_hand(hand, word)
+            ws = get_word_score(word, len(hand))
+            ts += ws
+
+        else: 
+            print("This is not a valid word. Try again.")
+    
+    print('Total Socre is: %s ' % str(ts))
+    return ts
+
 # Problem #5: Playing a game
 # Make sure you understand how this code works!
 # 

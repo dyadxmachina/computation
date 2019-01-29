@@ -190,6 +190,76 @@ def test_is_valid_word(word_list):
         print "SUCCESS: test_is_valid_word()"
 
 
+def test_play_hand(word_list):
+    """
+    Unit test for play_hand
+    """
+    failure=False
+    # test 1
+
+    word = 'him'
+    # hand = get_frequency_dict(word)
+    hand = {'a':1,'c':1, 'i':1, 'h':1, 'm':2, 'z':1}
+    # print(hand)
+    if play_hand(hand,word_list) != 24:
+        print "FAILURE: play_hand()"
+        print "\tExpected 24, but got {score} for word: {word} ".format(score=play_hand(hand,word_list),word=word)
+
+        failure = True
+
+    # # test 2
+    # hand = {'r': 1, 'a': 3, 'p': 2, 'e': 1, 't': 1, 'u':1}
+    # word = "rapture"
+
+    # if  is_valid_word(word, hand, word_list):
+    #     print "FAILURE: test_is_valid_word()"
+    #     print "\tExpected False, but got True for word: '" + word + "' and hand:", hand
+
+    #     failure = True        
+
+    # # test 3
+    # hand = {'n': 1, 'h': 1, 'o': 1, 'y': 1, 'd':1, 'w':1, 'e': 2}
+    # word = "honey"
+
+    # if  not is_valid_word(word, hand, word_list):
+    #     print "FAILURE: test_is_valid_word()"
+    #     print "\tExpected True, but got False for word: '"+ word +"' and hand:", hand
+
+    #     failure = True                        
+
+    # # test 4
+    # hand = {'r': 1, 'a': 3, 'p': 2, 't': 1, 'u':2}
+    # word = "honey"
+
+    # if  is_valid_word(word, hand, word_list):
+    #     print "FAILURE: test_is_valid_word()"
+    #     print "\tExpected False, but got True for word: '" + word + "' and hand:", hand
+        
+    #     failure = True
+
+    # # test 5
+    # hand = {'e':1, 'v':2, 'n':1, 'i':1, 'l':2}
+    # word = "evil"
+    
+    # if  not is_valid_word(word, hand, word_list):
+    #     print "FAILURE: test_is_valid_word()"
+    #     print "\tExpected True, but got False for word: '" + word + "' and hand:", hand
+        
+    #     failure = True
+        
+    # # test 6
+    # word = "even"
+
+    # if  is_valid_word(word, hand, word_list):
+    #     print "FAILURE: test_is_valid_word()"
+    #     print "\tExpected False, but got True for word: '" + word + "' and hand:", hand
+    #     print "\t(If this is the only failure, make sure is_valid_word() isn't mutating its inputs)"        
+        
+    #     failure = True        
+
+    if not failure:
+        print "SUCCESS: play_hand()"
+
 word_list = load_words()
 print "----------------------------------------------------------------------"
 print "Testing get_word_score..."
@@ -200,5 +270,8 @@ test_update_hand()
 print "----------------------------------------------------------------------"
 print "Testing is_valid_word..."
 test_is_valid_word(word_list)
+print "----------------------------------------------------------------------"
+print "Testing play_hand..."
+test_play_hand(word_list)
 print "----------------------------------------------------------------------"
 print "All done!"
