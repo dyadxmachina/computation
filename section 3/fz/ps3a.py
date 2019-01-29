@@ -73,13 +73,32 @@ def get_word_score(word, n):
 	in the word multiplied by the length of the word, plus 50
 	points if all n letters are used on the first go.
 
+
+
 	Letters are scored as in Scrabble; A is worth 1, B is
 	worth 3, C is worth 3, D is worth 2, E is worth 1, and so on.
 
     word: string (lowercase letters)
     returns: int >= 0
     """
+    
     # TO DO...
+    word_length = len(word)
+    score = 0
+        
+    for x in word:
+        x_score = SCRABBLE_LETTER_VALUES[x]
+        score += x_score
+    
+    score = score * word_length
+
+    if (word_length == n):
+        score += 50
+            
+    return score
+    
+    
+    
     
 #
 # Make sure you understand how this function works and what it does!
@@ -100,6 +119,8 @@ def display_hand(hand):
         for j in range(hand[letter]):
              print letter,              # print all on the same line
     print                               # print an empty line
+
+
 
 #
 # Make sure you understand how this function works and what it does!
@@ -150,6 +171,12 @@ def update_hand(hand, word):
     """
     # TO DO ...
 
+    # use incrementor and assumes 0
+    updated_hand = hand
+    for x in word:
+        updated_hand[x] -= 1
+    
+    return(updated_hand)
 #
 # Problem #3: Test word validity
 #
@@ -163,7 +190,20 @@ def is_valid_word(word, hand, word_list):
     hand: dictionary (string -> int)
     word_list: list of lowercase strings
     """
-    # TO DO...
+    hand_temp = hand
+    if word not in word_list:
+        return(False)
+
+    for x in word:
+        if x in hand_temp.keys():
+            if hand_temp[x] != 0:
+                hand_temp[x] -= 1
+            else:
+                return False
+        else:
+            return False
+    return True
+    
 
 def calculate_handlen(hand):
     handlen = 0
@@ -175,7 +215,6 @@ def calculate_handlen(hand):
 # Problem #4: Playing a hand
 #
 def play_hand(hand, word_list):
-
     """
     Allows the user to play the given hand, as follows:
 
@@ -203,6 +242,32 @@ def play_hand(hand, word_list):
       
     """
     # TO DO ...
+    total_score = 0
+
+    def gt_o(list):
+        for x in list:
+            if x > 0:
+                return(True)
+        return(False)
+
+    while(gt_o(hand.values())):
+        display_hand(hand)
+        user_word = raw_input("Input your word: ")
+        if (user_word == "."):
+            break
+        if is_valid_word(user_word, hand, word_list):
+            hand = update_hand(hand, user_word)
+            wscore = get_word_score(user_word, len(hand))
+            total_score += wscore
+            print(user_word + " has " + str(wscore) + "pts.")
+            print("Total Score: " + str(total_score))
+    print("Gameover!!!  \r - " + str(total_score) + " total points")
+    
+    return(total_score)
+
+            
+
+
 
 #
 # Problem #5: Playing a game
@@ -230,4 +295,8 @@ def play_game(word_list):
 #
 if __name__ == '__main__':
     word_list = load_words()
+    hand = {'a':1, 'c':1, 'm':1}
+    play_hand(hand, word_list) 
+
     play_game(word_list)
+

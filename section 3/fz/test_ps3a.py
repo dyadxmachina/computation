@@ -1,5 +1,13 @@
 from ps3a import *
 
+
+def test_display_hand():
+    """
+    Unit test for deal_hand.
+    """
+    hand = deal_hand(HAND_SIZE)
+    display_hand(hand)
+
 #
 # Test code
 #
@@ -188,8 +196,26 @@ def test_is_valid_word(word_list):
     if not failure:
         print "SUCCESS: test_is_valid_word()"
 
+def test_play_hand():
+    """
+    Unit test for play_hand
+    """
+    failure=False
+    # test 1
+    current_hand = {'a':1, 'c':1, 'i':1, 'h':1, 'm':2, 'z':1}
+    ts = play_hand(current_hand, word_list)
+    
+    if (ts != 21):
+        print("Score is incorrect!")    
+
+    if not failure:
+        print "SUCCESS: test_is_play_hand()"
+
 
 word_list = load_words()
+print "----------------------------------------------------------------------"
+print "Testing display_hand..."
+test_display_hand()
 print "----------------------------------------------------------------------"
 print "Testing get_word_score..."
 test_get_word_score()
@@ -200,4 +226,9 @@ print "----------------------------------------------------------------------"
 print "Testing is_valid_word..."
 test_is_valid_word(word_list)
 print "----------------------------------------------------------------------"
+print "Testing play_hand..."
+test_play_hand()
+print "----------------------------------------------------------------------"
 print "All done!"
+
+
