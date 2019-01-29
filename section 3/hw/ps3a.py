@@ -241,19 +241,21 @@ def play_hand(hand, word_list):
     # display_hand(hand)
     # word = str(raw_input('Enter word, or a "." to indicates that you are finished: '))  
     #print(word)  
-    while sum(hand.values()) and word != '.':
+    while sum(hand.values()):
         display_hand(hand)
-        word = str(raw_input('Enter word, or a "." to indicates that you are finished: '))
-
+        word = raw_input('Enter word, or a "." to indicates that you are finished: ')
+        if word == '.':
+            break
         if is_valid_word(word, hand, word_list):
-            hand = update_hand(hand, word)
+            
             ws = get_word_score(word, len(hand))
+            hand = update_hand(hand, word)
             ts += ws
-
-        else: 
-            print("This is not a valid word. Try again.")
-    
-    print('Total Socre is: %s ' % str(ts))
+            print('Total Socre is: %s ' % str(ts))
+        # else: 
+        #     print("This is not a valid word. Try again.")
+        
+    print('Game Over! Your total Socre is: %s points' % str(ts))
     return ts
 
 # Problem #5: Playing a game
@@ -281,4 +283,7 @@ def play_game(word_list):
 #
 if __name__ == '__main__':
     word_list = load_words()
+    hand = {'a':1,'c':1, 'i':1, 'h':1, 'm':2, 'z':1}
+    # print(hand)
+    play_hand(hand, word_list)
     play_game(word_list)
