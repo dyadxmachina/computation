@@ -190,7 +190,7 @@ def is_valid_word(word, hand, word_list):
     hand: dictionary (string -> int)
     word_list: list of lowercase strings
     """
-    hand_temp = hand
+    hand_temp = hand.copy()
     if word not in word_list:
         return(False)
 
@@ -273,6 +273,7 @@ def play_hand(hand, word_list):
 # Problem #5: Playing a game
 # Make sure you understand how this code works!
 # 
+
 def play_game(word_list):
     """
     Allow the user to play an arbitrary number of hands.
@@ -288,15 +289,35 @@ def play_game(word_list):
 
     * If the user inputs anything else, ask them again.
     """
-    # TO DO...
+    
+    # * Asks the user to input 'n' or 'r' or 'e'.
+    play = True
+    
+    hand = deal_hand(HAND_SIZE)
+    play_hand(hand, word_list)
+    
+    while(play == True):
+        gate = raw_input("Please enter n for new hand, r to play the last hand and e to quit")
+        if gate == 'n':
+            hand = deal_hand(HAND_SIZE)
+            play_hand(hand, word_list)
+        elif gate == 'e':
+            break
+        elif gate == 'r':
+            play_hand(hand, word_list)
+        
+
+
+
 
 #
 # Build data structures used for entire session and play game
 #
 if __name__ == '__main__':
     word_list = load_words()
-    hand = {'a':2, 'c':2, 'm':2, 'l':2}
-    play_hand(hand, word_list) 
+
+    # hand = {'a':1,'c':1, 'i':3, 'h':10, 'm':2, 'z':1}
+    # play_hand(hand, word_list) 
 
     play_game(word_list)
 
