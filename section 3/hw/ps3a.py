@@ -241,6 +241,7 @@ def play_hand(hand, word_list):
     # display_hand(hand)
     # word = str(raw_input('Enter word, or a "." to indicates that you are finished: '))  
     #print(word)  
+    
     while sum(hand.values()):
         display_hand(hand)
         word = raw_input('Enter word, or a "." to indicates that you are finished: ')
@@ -277,18 +278,22 @@ def play_game(word_list):
     * If the user inputs anything else, ask them again.
     """
     # TO DO...
-    HAND_SIZE = 7
-    ini_hand = deal_hand(HAND_SIZE)
-    play_hand(ini_hand, word_list)
+    HAND_SIZE = 10
+    play = True
 
-    while usr_input not in ['e','n','r']:
-        usr_input = input('Please choose to play a new hand by input "n" or play your last hand again by input "r" or exit the game by input "e"')
+    while play:
+        ini_hand = deal_hand(HAND_SIZE)
+        play_hand(ini_hand, word_list)
+        usr_input = raw_input('Please choose to play a new hand by input "n" or play your last hand again by input "r" or exit the game by input "e": ')
         if usr_input == 'n':
             play_hand(deal_hand(HAND_SIZE), word_list)
+            
         elif usr_input == 'r':
             play_hand(ini_hand, word_list)
         elif usr_input == 'e':
-            return 'Game Over!'
+            play = False
+            print('Game Over!')
+
    
 
 #
@@ -296,7 +301,7 @@ def play_game(word_list):
 #
 if __name__ == '__main__':
     word_list = load_words()
-    hand = {'a':1,'c':1, 'i':1, 'h':1, 'm':10, 'z':1}
+    # hand = {'a':1,'c':1, 'i':1, 'h':1, 'm':10, 'z':1}
     # print(hand)
-    play_hand(hand, word_list)
+    # play_hand(hand, word_list)
     play_game(word_list)
