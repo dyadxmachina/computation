@@ -164,9 +164,9 @@ def update_hand(hand, word):
     # TO DO ...
     new_hand = hand
     for l in word: 
-        current_score = new_hand[l] - 1
+        # current_score = new_hand[l] - 1
         # if l in hand.keys(): 
-        new_hand[l] = current_score
+        new_hand[l] -= 1
        
     return new_hand
 
@@ -185,7 +185,7 @@ def is_valid_word(word, hand, word_list):
     word_list: list of lowercase strings
     """
     # TO DO...
-    hand_temp = hand
+    hand_temp = hand.copy()
     if word not in word_list: 
         return False
     
@@ -241,6 +241,7 @@ def play_hand(hand, word_list):
     # display_hand(hand)
     # word = str(raw_input('Enter word, or a "." to indicates that you are finished: '))  
     #print(word)  
+    
     while sum(hand.values()):
         display_hand(hand)
         word = raw_input('Enter word, or a "." to indicates that you are finished: ')
@@ -277,13 +278,30 @@ def play_game(word_list):
     * If the user inputs anything else, ask them again.
     """
     # TO DO...
+    HAND_SIZE = 10
+    play = True
+
+    while play:
+        ini_hand = deal_hand(HAND_SIZE)
+        play_hand(ini_hand, word_list)
+        usr_input = raw_input('Please choose to play a new hand by input "n" or play your last hand again by input "r" or exit the game by input "e": ')
+        if usr_input == 'n':
+            play_hand(deal_hand(HAND_SIZE), word_list)
+            
+        elif usr_input == 'r':
+            play_hand(ini_hand, word_list)
+        elif usr_input == 'e':
+            play = False
+            print('Game Over!')
+
+   
 
 #
 # Build data structures used for entire session and play game
 #
 if __name__ == '__main__':
     word_list = load_words()
-    hand = {'a':1,'c':1, 'i':1, 'h':1, 'm':2, 'z':1}
+    # hand = {'a':1,'c':1, 'i':1, 'h':1, 'm':10, 'z':1}
     # print(hand)
-    play_hand(hand, word_list)
+    # play_hand(hand, word_list)
     play_game(word_list)
