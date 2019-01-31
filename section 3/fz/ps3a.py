@@ -249,15 +249,15 @@ def play_hand(hand, word_list):
             if x > 0:
                 return(True)
         return(False)
-
-    while(gt_o(hand.values())):
-        display_hand(hand)
+    w_hand = hand.copy()
+    while(gt_o(w_hand.values())):
+        display_hand(w_hand)
         user_word = raw_input("Input your word: ")
         if (user_word == "."):
             break
-        if is_valid_word(user_word, hand, word_list):
-            hand = update_hand(hand, user_word)
-            wscore = get_word_score(user_word, len(hand))
+        if is_valid_word(user_word, w_hand, word_list):
+            w_hand = update_hand(w_hand, user_word)
+            wscore = get_word_score(user_word, len(w_hand))
             total_score += wscore
             print(user_word + " has " + str(wscore) + "pts.")
             print("Total Score: " + str(total_score))
@@ -293,18 +293,23 @@ def play_game(word_list):
     # * Asks the user to input 'n' or 'r' or 'e'.
     play = True
     
-    hand = deal_hand(HAND_SIZE)
-    play_hand(hand, word_list)
+    t_hand = deal_hand(HAND_SIZE)
+    play_hand(t_hand, word_list)
+
+    past_hand = t_hand.copy()
     
     while(play == True):
         gate = raw_input("Please enter n for new hand, r to play the last hand and e to quit")
+        
         if gate == 'n':
-            hand = deal_hand(HAND_SIZE)
-            play_hand(hand, word_list)
+            t_hand = deal_hand(HAND_SIZE)
+            past_hand = t_hand.copy()     
+            play_hand(t_hand, word_list)
         elif gate == 'e':
             break
         elif gate == 'r':
-            play_hand(hand, word_list)
+            play_hand(past_hand, word_list)
+            
         
 
 
