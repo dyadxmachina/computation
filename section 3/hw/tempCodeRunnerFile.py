@@ -287,9 +287,8 @@ def play_game(word_list):
 
         usr_input = raw_input('Please choose to play a new hand by input "n" or play your last hand again by input "r" or exit the game by input "e": ')
         if usr_input == 'n':
-            ini_hand = deal_hand(HAND_SIZE)
-            pre_hand = ini_hand.copy()
-            play_hand(pre_hand, word_list)
+            ini_hand = deal_hand(HAND_SIZE).copy()
+            play_hand(ini_hand, word_list)
             
         elif usr_input == 'r':
             play_hand(ini_hand, word_list)
