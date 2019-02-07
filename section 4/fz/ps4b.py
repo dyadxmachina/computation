@@ -109,8 +109,6 @@ class Message(object):
 
         alphabet_l = list(string.ascii_lowercase())
         alphabet_u = list(string.ascii_uppercase())
-        punc = string.punctuation
-        white_space = string.whitespace
 
         alpha_map = {}
         for x in range(len(alphabet_l)):
@@ -133,7 +131,17 @@ class Message(object):
         '''
 
         mapping = self.build_shift_dict(self, shift)
+        punc = string.punctuation()
+        white_space = string.whitespace()
 
+        new_message = ""
+
+        for x in self.get_message_text():
+            if (x in punc):
+                new_message += x
+            else:
+                new_message += mapping[x]
+        
 
 
 class PlaintextMessage(Message):
@@ -223,6 +231,12 @@ class CiphertextMessage(Message):
         pass #delete this line and replace with your code here
 
 if __name__ == '__main__':
+
+    # plaintext = PlaintextMessage('hello', 2)
+    # print('Expected Output: jgnnq')
+    print(Message("text"))
+    
+    # print('Actual Output:', Message.get_message_text_encrypted())
 
 #    Example test case (PlaintextMessage)
 #    plaintext = PlaintextMessage('hello', 2)
