@@ -70,7 +70,9 @@ class Message(object):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        self.message_text = text
+        self.valid_words = self.get_valid_words()
+        
 
     def get_message_text(self):
         '''
@@ -78,7 +80,7 @@ class Message(object):
         
         Returns: self.message_text
         '''
-        pass #delete this line and replace with your code here
+        return self.message_text #delete this line and replace with your code here
 
     def get_valid_words(self):
         '''
@@ -87,7 +89,8 @@ class Message(object):
         
         Returns: a COPY of self.valid_words
         '''
-        pass #delete this line and replace with your code here
+        return(self.valid_words.copy())
+    
 
     def build_shift_dict(self, shift):
         '''
@@ -103,7 +106,16 @@ class Message(object):
         Returns: a dictionary mapping a letter (string) to 
                  another letter (string). 
         '''
-        pass #delete this line and replace with your code here
+
+        alphabet_l = list(string.ascii_lowercase())
+        alphabet_u = list(string.ascii_uppercase())
+
+        alpha_map = {}
+        for x in range(len(alphabet_l)):
+            alpha_map[alphabet_l[x]] = alphabet_l[x+shift]
+            alpha_map[alphabet_u[x]] = alphabet_u[x+shift]
+        
+        return(alpha_map)
 
     def apply_shift(self, shift):
         '''
@@ -113,11 +125,24 @@ class Message(object):
         
         shift (integer): the shift with which to encrypt the message.
         0 <= shift < 26
-
+        
         Returns: the message text (string) in which every character is shifted
              down the alphabet by the input shift
         '''
-        pass #delete this line and replace with your code here
+
+        mapping = self.build_shift_dict(self, shift)
+        punc = string.punctuation()
+        white_space = string.whitespace()
+
+        new_message = ""
+
+        for x in self.get_message_text():
+            if (x in punc):
+                new_message += x
+            else:
+                new_message += mapping[x]
+        
+
 
 class PlaintextMessage(Message):
     def __init__(self, text, shift):
@@ -207,7 +232,13 @@ class CiphertextMessage(Message):
 
 if __name__ == '__main__':
 
-#    #Example test case (PlaintextMessage)
+    # plaintext = PlaintextMessage('hello', 2)
+    # print('Expected Output: jgnnq')
+    print(Message("text"))
+    
+    # print('Actual Output:', Message.get_message_text_encrypted())
+
+#    Example test case (PlaintextMessage)
 #    plaintext = PlaintextMessage('hello', 2)
 #    print('Expected Output: jgnnq')
 #    print('Actual Output:', plaintext.get_message_text_encrypted())
