@@ -18,6 +18,7 @@ def load_words(file_name):
     '''
     print("Loading word list from file...")
     # inFile: file
+    print(file_name)
     inFile = open(file_name, 'r')
     # wordlist: list of strings
     wordlist = []
@@ -57,7 +58,7 @@ def get_story_string():
 
 ### END HELPER CODE ###
 
-WORDLIST_FILENAME = 'words.txt'
+WORDLIST_FILENAME = '/home/haohanlovesfanli/computation/section 4/hw/words.txt'
 
 class Message(object):
     def __init__(self, text):
@@ -70,7 +71,9 @@ class Message(object):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        self.message_text = text 
+        self.valid_words = load_words(WORDLIST_FILENAME)
+         #delete this line and replace with your code here
 
     def get_message_text(self):
         '''
@@ -78,7 +81,7 @@ class Message(object):
         
         Returns: self.message_text
         '''
-        pass #delete this line and replace with your code here
+        return self.message_text#delete this line and replace with your code here
 
     def get_valid_words(self):
         '''
@@ -87,7 +90,7 @@ class Message(object):
         
         Returns: a COPY of self.valid_words
         '''
-        pass #delete this line and replace with your code here
+        return self.valid_words.copy() #delete this line and replace with your code here
 
     def build_shift_dict(self, shift):
         '''
@@ -103,7 +106,19 @@ class Message(object):
         Returns: a dictionary mapping a letter (string) to 
                  another letter (string). 
         '''
-        pass #delete this line and replace with your code here
+        encipher_dict = {} #delete this line and replace with your code here
+        lower_alpha = list(string.ascii_lowercase)
+        upper_alpha = list(string.ascii_uppercase)
+        shift = int(shift)
+        for i in range(len(lower_alpha)):
+            start = i%len(lower_alpha) 
+            end = i%len(lower_alpha) + shift
+                encipher_dict[lower_alpha[i]] = lower_alpha[i-len(lower_alpha)+shift]
+                encipher_dict[upper_alpha[i]] = upper_alpha[i-len(lower_alpha)+shift]
+    
+                encipher_dict[lower_alpha[i]] = lower_alpha[i+shift]
+                encipher_dict[upper_alpha[i]] = upper_alpha[i+shift]
+        return encipher_dict
 
     def apply_shift(self, shift):
         '''
@@ -117,7 +132,14 @@ class Message(object):
         Returns: the message text (string) in which every character is shifted
              down the alphabet by the input shift
         '''
-        pass #delete this line and replace with your code here
+        init_str = ''
+        en_dict = self.build_shift_dict( shift)
+        for l in self.message_text: 
+            if l in string.punctuation or l == ' ':
+                encipher_str = encipher_str + l
+            encipher_str = encipher_str + en_dict.l  #delete this line and replace with your code here
+        print(encipher_str)
+        return encipher_str
 
 class PlaintextMessage(Message):
     def __init__(self, text, shift):
@@ -218,7 +240,10 @@ if __name__ == '__main__':
 #    print('Actual Output:', ciphertext.decrypt_message())
 
     #TODO: WRITE YOUR TEST CASES HERE
-
+    regmessage = Message('han')
+    print('Expected Output: ', 'ler')
+    print('Actual Output: ', regmessage.apply_shift(4))
+#
     #TODO: best shift value and unencrypted story 
     
-    pass #delete this line and replace with your code here
+    #delete this line and replace with your code here
