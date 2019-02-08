@@ -89,7 +89,8 @@ class Message(object):
         
         Returns: a COPY of self.valid_words
         '''
-        return(self.valid_words.copy())
+        valid_words = load_words("/Users/cramsey/Documents/dyadxmachina/computation/section 4/fz/words.txt")
+        return(list(valid_words))
     
 
     def build_shift_dict(self, shift):
@@ -107,11 +108,14 @@ class Message(object):
                  another letter (string). 
         '''
 
-        alphabet_l = list(string.ascii_lowercase())
-        alphabet_u = list(string.ascii_uppercase())
+        alphabet_l = list(string.ascii_lowercase)
+        alphabet_u = list(string.ascii_uppercase)
+        
 
         alpha_map = {}
         for x in range(len(alphabet_l)):
+            if x == 26:
+                
             alpha_map[alphabet_l[x]] = alphabet_l[x+shift]
             alpha_map[alphabet_u[x]] = alphabet_u[x+shift]
         
@@ -130,13 +134,13 @@ class Message(object):
              down the alphabet by the input shift
         '''
 
-        mapping = self.build_shift_dict(self, shift)
-        punc = string.punctuation()
-        white_space = string.whitespace()
+        mapping = self.build_shift_dict(shift)
+        punc = string.punctuation
+        white_space = string.whitespace
 
         new_message = ""
-
-        for x in self.get_message_text():
+        old_message = self.get_message_text()
+        for x in old_message:
             if (x in punc):
                 new_message += x
             else:
@@ -234,7 +238,8 @@ if __name__ == '__main__':
 
     # plaintext = PlaintextMessage('hello', 2)
     # print('Expected Output: jgnnq')
-    print(Message("text"))
+    msg = Message("abc")
+    print(msg.apply_shift(1))
     
     # print('Actual Output:', Message.get_message_text_encrypted())
 
