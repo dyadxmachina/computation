@@ -111,13 +111,13 @@ class Message(object):
         upper_alpha = list(string.ascii_uppercase)
         shift = int(shift)
         for i in range(len(lower_alpha)):
-            start = i%len(lower_alpha) 
-            end = i%len(lower_alpha) + shift
-                encipher_dict[lower_alpha[i]] = lower_alpha[i-len(lower_alpha)+shift]
-                encipher_dict[upper_alpha[i]] = upper_alpha[i-len(lower_alpha)+shift]
-    
-                encipher_dict[lower_alpha[i]] = lower_alpha[i+shift]
-                encipher_dict[upper_alpha[i]] = upper_alpha[i+shift]
+            # start = i+shift%len(lower_alpha) 
+            # print(start)/
+            end = (i+shift)%len(lower_alpha) 
+            # print(end)
+            encipher_dict[lower_alpha[i]] = lower_alpha[end]
+            encipher_dict[upper_alpha[i]] = upper_alpha[end]
+
         return encipher_dict
 
     def apply_shift(self, shift):
@@ -132,13 +132,15 @@ class Message(object):
         Returns: the message text (string) in which every character is shifted
              down the alphabet by the input shift
         '''
-        init_str = ''
+        encipher_str = ''
         en_dict = self.build_shift_dict( shift)
         for l in self.message_text: 
             if l in string.punctuation or l == ' ':
+                print(l)
                 encipher_str = encipher_str + l
-            encipher_str = encipher_str + en_dict.l  #delete this line and replace with your code here
-        print(encipher_str)
+            else:
+                encipher_str = encipher_str + en_dict[str(l)]  #delete this line and replace with your code here
+        # print(encipher_str)
         return encipher_str
 
 class PlaintextMessage(Message):
@@ -240,8 +242,8 @@ if __name__ == '__main__':
 #    print('Actual Output:', ciphertext.decrypt_message())
 
     #TODO: WRITE YOUR TEST CASES HERE
-    regmessage = Message('han')
-    print('Expected Output: ', 'ler')
+    regmessage = Message('hao han')
+    print('Expected Output: ', 'les ler')
     print('Actual Output: ', regmessage.apply_shift(4))
 #
     #TODO: best shift value and unencrypted story 
