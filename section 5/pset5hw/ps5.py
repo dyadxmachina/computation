@@ -54,7 +54,36 @@ def process(url):
 
 # Problem 1
 
-# TODO: NewsStory
+class NewStory(self):
+    
+    def get_guid(self):
+        return self.guid
+
+    def get_title(self):
+        return self.title
+
+    def get_description(self):
+        return self.description
+
+    def get_link(self):
+        return self.link
+
+    def get_pubdate(self):
+        return self.pubdate
+
+    def constructor(guid, title, description, link, pubdate):
+        '''
+            Stores guid, title, description, link and pubdate of a feed into a dictionary for the later use
+            Returns: feed dictionary 
+                - type: dict
+        '''
+        feed_dict = {}
+        feed_dict['guid'] = self.get_guid
+        feed_dict['title'] = self.get_title
+        feed_dict['description'] = self.get_description
+        feed_dict['link'] = self.get_link
+        feed_dict['pubdate'] = self.get_pubdate
+        return feed_dcit
 
 
 #======================
