@@ -102,7 +102,15 @@ class Trigger(object):
 # PHRASE TRIGGERS
 
 # Problem 2
-# TODO: PhraseTrigger
+    class PhaseTrigger(Trigger):
+        def is_phase_in(self, string):
+            '''
+                Takes in one string argument text, returns True if the whole phrase is presented in text, False other wise
+                Return: True or False
+                 - type: Boolean val
+            '''
+            
+
 
 # Problem 3
 # TODO: TitleTrigger
@@ -225,7 +233,7 @@ def main_thread(master):
 
         while True:
 
-            print("Polling . . .", end=' ')
+            # print("Polling . . .", end=' ')
             # Get stories from Google's Top Stories RSS news feed
             stories = process("http://news.google.com/news?output=rss")
 
