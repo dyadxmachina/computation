@@ -113,11 +113,19 @@ class Message(object):
         
 
         alpha_map = {}
-        for x in range(len(alphabet_l)):
-            if x == 26:
-                
-            alpha_map[alphabet_l[x]] = alphabet_l[x+shift]
-            alpha_map[alphabet_u[x]] = alphabet_u[x+shift]
+        length_alpha = len(alphabet_l)
+        for x in range(length_alpha):
+            print(x)
+            idx = x + shift
+            if idx > length_alpha:
+                diff = length_alpha - x
+                idx = abs(diff - (x + shift))
+                print("IDX", idx)
+            
+    
+
+            alpha_map[alphabet_l[x]] = alphabet_l[idx]
+            alpha_map[alphabet_u[x]] = alphabet_u[idx]
         
         return(alpha_map)
 
