@@ -139,9 +139,18 @@ import re
 import struct
 import time
 import types
-import urllib.request, urllib.parse, urllib.error
-import urllib.request, urllib.error, urllib.parse
-import urllib.parse
+
+# from six.moves import urllib
+
+# try:
+#     from urllib.request import urlopen
+# except ImportError:
+#     from urllib2 import urlopen
+
+import urllib
+# import urllib.parse, urllib.error
+# import urllib.error, urllib.parse
+# import urllib.parse
 import warnings
 
 from html.entities import name2codepoint, codepoint2name, entitydefs
@@ -439,7 +448,7 @@ def _urljoin(base, uri):
     if not isinstance(uri, str):
         uri = uri.decode('utf-8', 'ignore')
     try:
-        uri = urllib.parse.urljoin(base, uri)
+        uri = urllib.urljoin(base, uri)
     except ValueError:
         uri = ''
     if not isinstance(uri, str):
@@ -2341,7 +2350,7 @@ def _makeSafeAbsoluteURI(base, rel=None):
         return rel or ''
     if not rel:
         try:
-            scheme = urllib.parse.urlparse(base)[0]
+            scheme = urllib.urlparse(base)[0]
         except ValueError:
             return ''
         if not scheme or scheme in ACCEPTABLE_URI_SCHEMES:
@@ -2754,7 +2763,7 @@ def _sanitizeHTML(htmlSource, encoding, _type):
     data = data.strip().replace('\r\n', '\n')
     return data
 
-class _FeedURLHandler(urllib.request.HTTPDigestAuthHandler, urllib.request.HTTPRedirectHandler, urllib.request.HTTPDefaultErrorHandler):
+class _FeedURLHandler(urllib.HTTPDigestAuthHandler, urllib.HTTPRedirectHandler, urllib.HTTPDefaultErrorHandler):
     def http_error_default(self, req, fp, code, msg, headers):
         # The default implementation just raises HTTPError.
         # Forget that.
@@ -2762,7 +2771,7 @@ class _FeedURLHandler(urllib.request.HTTPDigestAuthHandler, urllib.request.HTTPR
         return fp
 
     def http_error_301(self, req, fp, code, msg, hdrs):
-        result = urllib.request.HTTPRedirectHandler.http_error_301(self, req, fp,
+        result = urllib.HTTPRedirectHandler.http_error_301(self, req, fp,
                                                             code, msg, hdrs)
         result.status = code
         result.newurl = result.geturl()
@@ -2785,7 +2794,7 @@ class _FeedURLHandler(urllib.request.HTTPDigestAuthHandler, urllib.request.HTTPR
         # header the server sent back (for the realm) and retry
         # the request with the appropriate digest auth headers instead.
         # This evil genius hack has been brought to you by Aaron Swartz.
-        host = urllib.parse.urlparse(req.get_full_url())[1]
+        host = urllib.urlparse(req.get_full_url())[1]
         if base64 is None or 'Authorization' not in req.headers \
                           or 'WWW-Authenticate' not in headers:
             return self.http_error_default(req, fp, code, msg, headers)
@@ -2835,7 +2844,7 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
         return url_file_stream_or_string
 
     if isinstance(url_file_stream_or_string, str) \
-       and urllib.parse.urlparse(url_file_stream_or_string)[0] in ('http', 'https', 'ftp', 'file', 'feed'):
+       and urllib.urlparse(url_file_stream_or_string)[0] in ('http', 'https', 'ftp', 'file', 'feed'):
         # Deal with the feed URI scheme
         if url_file_stream_or_string.startswith('feed:http'):
             url_file_stream_or_string = url_file_stream_or_string[5:]
@@ -2846,10 +2855,10 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
         # Test for inline user:password credentials for HTTP basic auth
         auth = None
         if base64 and not url_file_stream_or_string.startswith('ftp:'):
-            urltype, rest = urllib.parse.splittype(url_file_stream_or_string)
-            realhost, rest = urllib.parse.splithost(rest)
+            urltype, rest = urllib.splittype(url_file_stream_or_string)
+            realhost, rest = urllib.splithost(rest)
             if realhost:
-                user_passwd, realhost = urllib.parse.splituser(realhost)
+                user_passwd, realhost = urllib.splituser(realhost)
                 if user_passwd:
                     url_file_stream_or_string = '%s://%s%s' % (urltype, realhost, rest)
                     auth = base64.standard_b64encode(user_passwd).strip()
@@ -2860,7 +2869,7 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
 
         # try to open with urllib2 (to use optional headers)
         request = _build_urllib2_request(url_file_stream_or_string, agent, etag, modified, referrer, auth, request_headers)
-        opener = urllib.request.build_opener(*tuple(handlers + [_FeedURLHandler()]))
+        opener = urllib.build_opener(*tuple(handlers + [_FeedURLHandler()]))
         opener.addheaders = [] # RMK - must clear so we only send our custom User-Agent
         try:
             return opener.open(request)
@@ -2890,7 +2899,7 @@ def _convert_to_idn(url):
     # this function should only be called with a unicode string
     # strategy: if the host cannot be encoded in ascii, then
     # it'll be necessary to encode it in idn form
-    parts = list(urllib.parse.urlsplit(url))
+    parts = list(urllib.urlsplit(url))
     try:
         parts[1].encode('ascii')
     except UnicodeEncodeError:
@@ -2905,12 +2914,12 @@ def _convert_to_idn(url):
         parts[1] = '.'.join(newhost)
         if port:
             parts[1] += ':' + port
-        return urllib.parse.urlunsplit(parts)
+        return urllib.urlunsplit(parts)
     else:
         return url
 
 def _build_urllib2_request(url, agent, etag, modified, referrer, auth, request_headers):
-    request = urllib.request.Request(url)
+    request = urllib.Request(url)
     request.add_header('User-Agent', agent)
     if etag:
         request.add_header('If-None-Match', etag)
