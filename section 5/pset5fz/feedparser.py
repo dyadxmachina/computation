@@ -146,7 +146,7 @@ import types
 #     from urllib.request import urlopen
 # except ImportError:
 #     from urllib2 import urlopen
-
+import urllib2
 import urllib
 # import urllib.parse, urllib.error
 # import urllib.error, urllib.parse
@@ -413,33 +413,33 @@ class FeedParserDict(dict):
         return id(self)
 
 _cp1252 = {
-    128: chr(8364), # euro sign
-    130: chr(8218), # single low-9 quotation mark
-    131: chr( 402), # latin small letter f with hook
-    132: chr(8222), # double low-9 quotation mark
-    133: chr(8230), # horizontal ellipsis
-    134: chr(8224), # dagger
-    135: chr(8225), # double dagger
-    136: chr( 710), # modifier letter circumflex accent
-    137: chr(8240), # per mille sign
-    138: chr( 352), # latin capital letter s with caron
-    139: chr(8249), # single left-pointing angle quotation mark
-    140: chr( 338), # latin capital ligature oe
-    142: chr( 381), # latin capital letter z with caron
-    145: chr(8216), # left single quotation mark
-    146: chr(8217), # right single quotation mark
-    147: chr(8220), # left double quotation mark
-    148: chr(8221), # right double quotation mark
-    149: chr(8226), # bullet
-    150: chr(8211), # en dash
-    151: chr(8212), # em dash
-    152: chr( 732), # small tilde
-    153: chr(8482), # trade mark sign
-    154: chr( 353), # latin small letter s with caron
-    155: chr(8250), # single right-pointing angle quotation mark
-    156: chr( 339), # latin small ligature oe
-    158: chr( 382), # latin small letter z with caron
-    159: chr( 376), # latin capital letter y with diaeresis
+    128: unichr(8364), # euro sign
+    130: unichr(8218), # single low-9 quotation mark
+    131: unichr( 402), # latin small letter f with hook
+    132: unichr(8222), # double low-9 quotation mark
+    133: unichr(8230), # horizontal ellipsis
+    134: unichr(8224), # dagger
+    135: unichr(8225), # double dagger
+    136: unichr( 710), # modifier letter circumflex accent
+    137: unichr(8240), # per mille sign
+    138: unichr( 352), # latin capital letter s with caron
+    139: unichr(8249), # single left-pointing angle quotation mark
+    140: unichr( 338), # latin capital ligature oe
+    142: unichr( 381), # latin capital letter z with caron
+    145: unichr(8216), # left single quotation mark
+    146: unichr(8217), # right single quotation mark
+    147: unichr(8220), # left double quotation mark
+    148: unichr(8221), # right double quotation mark
+    149: unichr(8226), # bullet
+    150: unichr(8211), # en dash
+    151: unichr(8212), # em dash
+    152: unichr( 732), # small tilde
+    153: unichr(8482), # trade mark sign
+    154: unichr( 353), # latin small letter s with caron
+    155: unichr(8250), # single right-pointing angle quotation mark
+    156: unichr( 339), # latin small ligature oe
+    158: unichr( 382), # latin small letter z with caron
+    159: unichr( 376), # latin capital letter y with diaeresis
 }
 
 _urifixer = re.compile('^([A-Za-z][A-Za-z0-9+-.]*://)(/*)(.*?)')
@@ -741,7 +741,7 @@ class _FeedParserMixin:
                 c = int(ref[1:], 16)
             else:
                 c = int(ref)
-            text = chr(c).encode('utf-8')
+            text = unichr(c).encode('utf-8')
         self.elementstack[-1][2].append(text)
 
     def handle_entityref(self, ref):
@@ -760,7 +760,7 @@ class _FeedParserMixin:
             except KeyError:
                 text = '&%s;' % ref
             else:
-                text = chr(name2codepoint[ref]).encode('utf-8')
+                text = unichr(name2codepoint[ref]).encode('utf-8')
         self.elementstack[-1][2].append(text)
 
     def handle_data(self, text, escape=1):
@@ -2763,7 +2763,9 @@ def _sanitizeHTML(htmlSource, encoding, _type):
     data = data.strip().replace('\r\n', '\n')
     return data
 
-class _FeedURLHandler(urllib.HTTPDigestAuthHandler, urllib.HTTPRedirectHandler, urllib.HTTPDefaultErrorHandler):
+
+
+class _FeedURLHandler(urllib2.HTTPDigestAuthHandler, urllib2.HTTPRedirectHandler, urllib2.HTTPDefaultErrorHandler):
     def http_error_default(self, req, fp, code, msg, headers):
         # The default implementation just raises HTTPError.
         # Forget that.
