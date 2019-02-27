@@ -53,7 +53,14 @@ def process(url):
 
 # Problem 1
 
-class NewStory(self):
+class NewsStory(object):
+
+    def __init__(self, guid, title, description, link, pubdate):
+        self.guid = guid
+        self.title = title
+        self.description = description
+        self.link = link
+        self.pubdate = pubdate
     
     def get_guid(self):
         return self.guid
@@ -70,7 +77,7 @@ class NewStory(self):
     def get_pubdate(self):
         return self.pubdate
 
-    def constructor(guid, title, description, link, pubdate):
+    def constructor(self):
         '''
             Stores guid, title, description, link and pubdate of a feed into a dictionary for the later use
             Returns: feed dictionary 
@@ -102,11 +109,19 @@ class Trigger(object):
 
 # Problem 2
     class PhaseTrigger(Trigger):
+        def __init__(self, phase):
+            self.phase = phase
         def is_phase_in(self, string):
             '''
                 Takes in one string argument text, returns True if the whole phrase is presented in text, False other wise
                 Return: True or False
                  - type: Boolean val
+
+                Requirement: 
+                 - A pharse is one or more works sperated by a single space between words
+                 - The trigger will fire only when each word in the phrase is present in its 
+                 entirety and appears consecutively in the text, sperated by spaces or punction
+                 - the trigger should not be case sensitive 
             '''
             
 
