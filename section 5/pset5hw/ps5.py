@@ -12,7 +12,6 @@ from mtTkinter import *
 from datetime import datetime
 import pytz
 
-
 #-----------------------------------------------------------------------
 
 #======================
