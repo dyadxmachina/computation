@@ -139,9 +139,18 @@ import re
 import struct
 import time
 import types
-import urllib.request, urllib.parse, urllib.error
-import urllib.request, urllib.error, urllib.parse
-import urllib.parse
+
+# from six.moves import urllib
+
+# try:
+#     from urllib.request import urlopen
+# except ImportError:
+#     from urllib2 import urlopen
+import urllib2
+import urllib
+# import urllib.parse, urllib.error
+# import urllib.error, urllib.parse
+# import urllib.parse
 import warnings
 
 from html.entities import name2codepoint, codepoint2name, entitydefs
@@ -404,33 +413,33 @@ class FeedParserDict(dict):
         return id(self)
 
 _cp1252 = {
-    128: chr(8364), # euro sign
-    130: chr(8218), # single low-9 quotation mark
-    131: chr( 402), # latin small letter f with hook
-    132: chr(8222), # double low-9 quotation mark
-    133: chr(8230), # horizontal ellipsis
-    134: chr(8224), # dagger
-    135: chr(8225), # double dagger
-    136: chr( 710), # modifier letter circumflex accent
-    137: chr(8240), # per mille sign
-    138: chr( 352), # latin capital letter s with caron
-    139: chr(8249), # single left-pointing angle quotation mark
-    140: chr( 338), # latin capital ligature oe
-    142: chr( 381), # latin capital letter z with caron
-    145: chr(8216), # left single quotation mark
-    146: chr(8217), # right single quotation mark
-    147: chr(8220), # left double quotation mark
-    148: chr(8221), # right double quotation mark
-    149: chr(8226), # bullet
-    150: chr(8211), # en dash
-    151: chr(8212), # em dash
-    152: chr( 732), # small tilde
-    153: chr(8482), # trade mark sign
-    154: chr( 353), # latin small letter s with caron
-    155: chr(8250), # single right-pointing angle quotation mark
-    156: chr( 339), # latin small ligature oe
-    158: chr( 382), # latin small letter z with caron
-    159: chr( 376), # latin capital letter y with diaeresis
+    128: unichr(8364), # euro sign
+    130: unichr(8218), # single low-9 quotation mark
+    131: unichr( 402), # latin small letter f with hook
+    132: unichr(8222), # double low-9 quotation mark
+    133: unichr(8230), # horizontal ellipsis
+    134: unichr(8224), # dagger
+    135: unichr(8225), # double dagger
+    136: unichr( 710), # modifier letter circumflex accent
+    137: unichr(8240), # per mille sign
+    138: unichr( 352), # latin capital letter s with caron
+    139: unichr(8249), # single left-pointing angle quotation mark
+    140: unichr( 338), # latin capital ligature oe
+    142: unichr( 381), # latin capital letter z with caron
+    145: unichr(8216), # left single quotation mark
+    146: unichr(8217), # right single quotation mark
+    147: unichr(8220), # left double quotation mark
+    148: unichr(8221), # right double quotation mark
+    149: unichr(8226), # bullet
+    150: unichr(8211), # en dash
+    151: unichr(8212), # em dash
+    152: unichr( 732), # small tilde
+    153: unichr(8482), # trade mark sign
+    154: unichr( 353), # latin small letter s with caron
+    155: unichr(8250), # single right-pointing angle quotation mark
+    156: unichr( 339), # latin small ligature oe
+    158: unichr( 382), # latin small letter z with caron
+    159: unichr( 376), # latin capital letter y with diaeresis
 }
 
 _urifixer = re.compile('^([A-Za-z][A-Za-z0-9+-.]*://)(/*)(.*?)')
@@ -439,7 +448,7 @@ def _urljoin(base, uri):
     if not isinstance(uri, str):
         uri = uri.decode('utf-8', 'ignore')
     try:
-        uri = urllib.parse.urljoin(base, uri)
+        uri = urllib.urljoin(base, uri)
     except ValueError:
         uri = ''
     if not isinstance(uri, str):
@@ -732,7 +741,7 @@ class _FeedParserMixin:
                 c = int(ref[1:], 16)
             else:
                 c = int(ref)
-            text = chr(c).encode('utf-8')
+            text = unichr(c).encode('utf-8')
         self.elementstack[-1][2].append(text)
 
     def handle_entityref(self, ref):
@@ -751,7 +760,7 @@ class _FeedParserMixin:
             except KeyError:
                 text = '&%s;' % ref
             else:
-                text = chr(name2codepoint[ref]).encode('utf-8')
+                text = unichr(name2codepoint[ref]).encode('utf-8')
         self.elementstack[-1][2].append(text)
 
     def handle_data(self, text, escape=1):
@@ -2341,7 +2350,7 @@ def _makeSafeAbsoluteURI(base, rel=None):
         return rel or ''
     if not rel:
         try:
-            scheme = urllib.parse.urlparse(base)[0]
+            scheme = urllib.urlparse(base)[0]
         except ValueError:
             return ''
         if not scheme or scheme in ACCEPTABLE_URI_SCHEMES:
@@ -2754,7 +2763,9 @@ def _sanitizeHTML(htmlSource, encoding, _type):
     data = data.strip().replace('\r\n', '\n')
     return data
 
-class _FeedURLHandler(urllib.request.HTTPDigestAuthHandler, urllib.request.HTTPRedirectHandler, urllib.request.HTTPDefaultErrorHandler):
+
+
+class _FeedURLHandler(urllib2.HTTPDigestAuthHandler, urllib2.HTTPRedirectHandler, urllib2.HTTPDefaultErrorHandler):
     def http_error_default(self, req, fp, code, msg, headers):
         # The default implementation just raises HTTPError.
         # Forget that.
@@ -2762,7 +2773,7 @@ class _FeedURLHandler(urllib.request.HTTPDigestAuthHandler, urllib.request.HTTPR
         return fp
 
     def http_error_301(self, req, fp, code, msg, hdrs):
-        result = urllib.request.HTTPRedirectHandler.http_error_301(self, req, fp,
+        result = urllib.HTTPRedirectHandler.http_error_301(self, req, fp,
                                                             code, msg, hdrs)
         result.status = code
         result.newurl = result.geturl()
@@ -2785,7 +2796,7 @@ class _FeedURLHandler(urllib.request.HTTPDigestAuthHandler, urllib.request.HTTPR
         # header the server sent back (for the realm) and retry
         # the request with the appropriate digest auth headers instead.
         # This evil genius hack has been brought to you by Aaron Swartz.
-        host = urllib.parse.urlparse(req.get_full_url())[1]
+        host = urllib.urlparse(req.get_full_url())[1]
         if base64 is None or 'Authorization' not in req.headers \
                           or 'WWW-Authenticate' not in headers:
             return self.http_error_default(req, fp, code, msg, headers)
@@ -2835,7 +2846,7 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
         return url_file_stream_or_string
 
     if isinstance(url_file_stream_or_string, str) \
-       and urllib.parse.urlparse(url_file_stream_or_string)[0] in ('http', 'https', 'ftp', 'file', 'feed'):
+       and urllib.urlparse(url_file_stream_or_string)[0] in ('http', 'https', 'ftp', 'file', 'feed'):
         # Deal with the feed URI scheme
         if url_file_stream_or_string.startswith('feed:http'):
             url_file_stream_or_string = url_file_stream_or_string[5:]
@@ -2846,10 +2857,10 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
         # Test for inline user:password credentials for HTTP basic auth
         auth = None
         if base64 and not url_file_stream_or_string.startswith('ftp:'):
-            urltype, rest = urllib.parse.splittype(url_file_stream_or_string)
-            realhost, rest = urllib.parse.splithost(rest)
+            urltype, rest = urllib.splittype(url_file_stream_or_string)
+            realhost, rest = urllib.splithost(rest)
             if realhost:
-                user_passwd, realhost = urllib.parse.splituser(realhost)
+                user_passwd, realhost = urllib.splituser(realhost)
                 if user_passwd:
                     url_file_stream_or_string = '%s://%s%s' % (urltype, realhost, rest)
                     auth = base64.standard_b64encode(user_passwd).strip()
@@ -2860,7 +2871,7 @@ def _open_resource(url_file_stream_or_string, etag, modified, agent, referrer, h
 
         # try to open with urllib2 (to use optional headers)
         request = _build_urllib2_request(url_file_stream_or_string, agent, etag, modified, referrer, auth, request_headers)
-        opener = urllib.request.build_opener(*tuple(handlers + [_FeedURLHandler()]))
+        opener = urllib.build_opener(*tuple(handlers + [_FeedURLHandler()]))
         opener.addheaders = [] # RMK - must clear so we only send our custom User-Agent
         try:
             return opener.open(request)
@@ -2890,7 +2901,7 @@ def _convert_to_idn(url):
     # this function should only be called with a unicode string
     # strategy: if the host cannot be encoded in ascii, then
     # it'll be necessary to encode it in idn form
-    parts = list(urllib.parse.urlsplit(url))
+    parts = list(urllib.urlsplit(url))
     try:
         parts[1].encode('ascii')
     except UnicodeEncodeError:
@@ -2905,12 +2916,12 @@ def _convert_to_idn(url):
         parts[1] = '.'.join(newhost)
         if port:
             parts[1] += ':' + port
-        return urllib.parse.urlunsplit(parts)
+        return urllib.urlunsplit(parts)
     else:
         return url
 
 def _build_urllib2_request(url, agent, etag, modified, referrer, auth, request_headers):
-    request = urllib.request.Request(url)
+    request = urllib.Request(url)
     request.add_header('User-Agent', agent)
     if etag:
         request.add_header('If-None-Match', etag)
