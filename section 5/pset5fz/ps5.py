@@ -99,12 +99,40 @@ class Trigger(object):
 
 # Problem 2
 # TODO: PhraseTrigger
+class PhraseTrigger(Trigger):
+    def __init__(phrase):
+        self.phrase = phrase
 
+    def is_phrase_in(self, string):
+        string = string.lower()
+        if string in self.phrase:
+            return True
+        else:
+            return False
+
+
+    # def evaluate(self, story):
+        # return(self)
 # Problem 3
 # TODO: TitleTrigger
+class TitleTrigger(Trigger):
+    def __init__(phrase):
+        self.phrase = phrase
+    def get_title(story):
+        return story.get_title()  
+    def evaluate(self, story):
+        gt = get_title(story)
+        if self.phrase in gt:
+            return(True) 
+        else:
+            return(False)
+        # return(self)
 
 # Problem 4
 # TODO: DescriptionTrigger
+class DescriptionTrigger(Trigger):
+    def evaluate(self, story):
+        return(self)
 
 # TIME TRIGGERS
 
