@@ -137,6 +137,8 @@ class PhaseTrigger(Trigger):
             return True
         else: 
             return False 
+    def evaluate(self, story):
+        return self.is_phase_in( story)
 
 
             
@@ -146,7 +148,14 @@ class PhaseTrigger(Trigger):
 class TitleTrigger(PhaseTrigger):
     def __init__(self, phase):
         self.phase = phase
-    def check_title(self, )
+
+    def check_title(self):
+        text = self.get_title()
+        print('INPUT TEXT: ', text)
+        return self.is_phase_in(text)
+
+
+
 
 # Problem 4
 # TODO: DescriptionTrigger
