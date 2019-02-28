@@ -146,14 +146,16 @@ import types
 #     from urllib.request import urlopen
 # except ImportError:
 #     from urllib2 import urlopen
+
 import urllib2
 import urllib
+
 # import urllib.parse, urllib.error
 # import urllib.error, urllib.parse
 # import urllib.parse
 import warnings
 
-from html.entities import name2codepoint, codepoint2name, entitydefs
+# from html.entities import name2codepoint, codepoint2name, entitydefs
 import collections
 
 try:
