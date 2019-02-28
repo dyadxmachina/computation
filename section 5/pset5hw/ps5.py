@@ -122,7 +122,14 @@ class Trigger(object):
                  - The trigger will fire only when each word in the phrase is present in its 
                  entirety and appears consecutively in the text, sperated by spaces or punction
                  - the trigger should not be case sensitive 
+                 - split/replace/join methods will be certainly helpful
             '''
+            phase_list = ''.join(self.phase.split(' '))
+            lower_string = string.lower()
+            exclude = list(string.punction)
+            clean_string = ''.join(charac for charac in exclude if charac not in exclude)
+
+
             
 
 
