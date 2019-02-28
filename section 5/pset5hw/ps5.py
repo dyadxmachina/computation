@@ -89,7 +89,8 @@ class NewsStory(object):
         feed_dict['description'] = self.get_description
         feed_dict['link'] = self.get_link
         feed_dict['pubdate'] = self.get_pubdate
-        return feed_dcit
+
+        return feed_dict
 
 
 #======================
@@ -108,33 +109,44 @@ class Trigger(object):
 # PHRASE TRIGGERS
 
 # Problem 2
-    class PhaseTrigger(Trigger):
-        def __init__(self, phase):
-            self.phase = phase
-        def is_phase_in(self, string):
-            '''
-                Takes in one string argument text, returns True if the whole phrase is presented in text, False other wise
-                Return: True or False
-                 - type: Boolean val
+class PhaseTrigger(Trigger):
+    def __init__(self, phase):
+        self.phase = phase
+    def is_phase_in(self, input_string):
+        '''
+            Takes in one string argument text, returns True if the whole phrase is presented in text, False other wise
+            Return: True or False
+                - type: Boolean val
 
-                Requirement: 
-                 - A pharse is one or more works sperated by a single space between words
-                 - The trigger will fire only when each word in the phrase is present in its 
-                 entirety and appears consecutively in the text, sperated by spaces or punction
-                 - the trigger should not be case sensitive 
-                 - split/replace/join methods will be certainly helpful
-            '''
-            phase_list = ''.join(self.phase.split(' '))
-            lower_string = string.lower()
-            exclude = list(string.punction)
-            clean_string = ''.join(charac for charac in exclude if charac not in exclude)
+            Requirement: 
+                - A pharse is one or more works sperated by a single space between words
+                - The trigger will fire only when each word in the phrase is present in its 
+                entirety and appears consecutively in the text, sperated by spaces or punction
+                - the trigger should not be case sensitive 
+                - split/replace/join methods will be certainly helpful
+        '''
+        lower_phase = self.phase.lower()
+        phase_list = lower_phase.split(' ')
+        print('CLEAN PHASE: ', phase_list)
+        lower_string = input_string.lower()
+        exclude = list(string.punctuation)
+        clean_string = ' '.join(charac for charac in lower_string if charac not in exclude and charac != ' ')
+        string_list = clean_string.split(' ')
+        print('CLEAN STRING: ', string_list)
+        if phase_list in clean_string: 
+            return True
+        else: 
+            return False 
 
 
             
 
 
 # Problem 3
-# TODO: TitleTrigger
+class TitleTrigger(PhaseTrigger):
+    def __init__(self, phase):
+        self.phase = phase
+    def check_title(self, )
 
 # Problem 4
 # TODO: DescriptionTrigger
