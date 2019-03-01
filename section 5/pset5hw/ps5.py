@@ -165,7 +165,9 @@ class TitleTrigger(PhaseTrigger):
 
 
 # Problem 4
-# TODO: DescriptionTrigger
+class DescriptionTrigger(PhaseTrigger):
+    def __init__(self, phase):
+        self.phase = phase
 
 # TIME TRIGGERS
 
