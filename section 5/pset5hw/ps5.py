@@ -162,8 +162,6 @@ class TitleTrigger(PhaseTrigger):
         return self.check_title(story)
 
 
-
-
 # Problem 4
 class DescriptionTrigger(PhaseTrigger):
     def __init__(self, phase):
@@ -182,10 +180,26 @@ class TimeTrigger(Trigger):
 #        Input: Time has to be in EST and in the format of "%d %b %Y %H:%M:%S".
 #        Convert time from string to a datetime before saving it as an attribute.
 
-    def __init__(self,)
+    def __init__(self,time):
+        self.time = datetime.strptime(time, '%d %b %Y %H:%M:%S') 
+
+    def check_time(self, story):
+        story_time = story.get_pubdate()
+        conv_time = datetime.strptime(story_time, '%d %b %Y %H:%M:%S')
+        if self.time == conv_time: 
+            return True
+        else: 
+            return False
+
 
 # Problem 6
-# TODO: BeforeTrigger and AfterTrigger
+class BeforeTrigger(TimeTrigger):
+    def __init__(self, trigger_time):
+        self.time = datetime.strptime(trigger_time, '%d %b %Y %H:%M:%S') 
+    def trigger(self, story)
+
+
+class AfterTrigger(TimeTrigger):
 
 
 # COMPOSITE TRIGGERS
