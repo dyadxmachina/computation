@@ -168,6 +168,11 @@ class TitleTrigger(PhaseTrigger):
 class DescriptionTrigger(PhaseTrigger):
     def __init__(self, phase):
         self.phase = phase
+    def check_description(self, story):
+        descrip = story.get_description()
+        return self.is_phase_in(descrip)
+    def evaluate(self, story):
+        return self.check_description(story)
 
 # TIME TRIGGERS
 
