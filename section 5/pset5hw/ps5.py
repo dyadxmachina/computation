@@ -128,17 +128,22 @@ class PhaseTrigger(Trigger):
         lower_phase = self.phase.lower()
         phase_list = lower_phase.split(' ')
         print('CLEAN PHASE: ', phase_list)
+        join_phase =  ''.join(phase_list)
         lower_string = input_string.lower()
         exclude = list(string.punctuation)
-        clean_string = ' '.join(charac for charac in lower_string if charac not in exclude and charac != ' ')
+        # nopunc_string = lower_string.replace(str([i for i in exclude]), ' ')
+        # print('NO PUNC STRING: ', nopunc_string)
+        clean_string = ''.join(charac if charac not in exclude else ' ' for charac in lower_string)
         string_list = clean_string.split(' ')
-        print('CLEAN STRING: ', string_list)
-        if phase_list in clean_string: 
+        print('CLEAN TEXT: ', string_list)
+        join_text = ''.join(string_list)
+        if set(phase_list).issubset(set(string_list)) and join_phase in join_text: 
+            print('True')
             return True
         else: 
+            print('False')
             return False 
-    def evaluate(self, story):
-        return self.is_phase_in( story)
+   
 
 
             
@@ -149,10 +154,12 @@ class TitleTrigger(PhaseTrigger):
     def __init__(self, phase):
         self.phase = phase
 
-    def check_title(self):
-        text = self.get_title()
+    def check_title(self, story):
+        text = story.get_title()
         print('INPUT TEXT: ', text)
         return self.is_phase_in(text)
+    def evaluate(self, story):
+        return self.check_title(story)
 
 
 
