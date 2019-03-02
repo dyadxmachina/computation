@@ -183,23 +183,43 @@ class TimeTrigger(Trigger):
     def __init__(self,time):
         self.time = datetime.strptime(time, '%d %b %Y %H:%M:%S') 
 
-    def check_time(self, story):
-        story_time = story.get_pubdate()
-        conv_time = datetime.strptime(story_time, '%d %b %Y %H:%M:%S')
-        if self.time == conv_time: 
-            return True
-        else: 
-            return False
+    def convert_time(self, story_time):
+        # conv_time = story_time.replace(tzinfo=pytz.timezone("EST"))
+        conv_time = story_time.replace(tzinfo=None)
+        return conv_time
+        # if self.time == conv_time: 
+        #     return True
+        # else: 
+        #     return False
 
 
 # Problem 6
 class BeforeTrigger(TimeTrigger):
     def __init__(self, trigger_time):
         self.time = datetime.strptime(trigger_time, '%d %b %Y %H:%M:%S') 
-    def trigger(self, story)
+    def beforetrigger(self, story):
+        story_time = self.convert_time(story.get_pubdate())
+        print('STORY TIME: ', story_time)
+        print('TRIGGER TIME: ', self.time)
+        return story_time < self.time
+        #     return True
+        # else: 
+        #     return False
+    def evaluate(self, story):
+        return self.beforetrigger(story)
 
 
 class AfterTrigger(TimeTrigger):
+    def __init__(self, trigger_time):
+        self.time = datetime.strptime(trigger_time, '%d %b %Y %H:%M:%S') 
+    def aftertrigger(self, story):
+        story_time = self.convert_time(story.get_pubdate())
+        return story_time > self.time 
+        #     return True
+        # else: 
+        #     return False
+    def evaluate(self, story):
+        return self.aftertrigger(story)
 
 
 # COMPOSITE TRIGGERS

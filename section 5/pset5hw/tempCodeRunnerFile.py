@@ -1,2 +1,1 @@
-
-        triggers = [MatchTrigger(a), MatchTrigger(nob)]
+pytz.timezone("EST")
