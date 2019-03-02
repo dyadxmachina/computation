@@ -119,16 +119,21 @@ class TitleTrigger(Trigger):
     def __init__(self, phrase):
         self.phrase = phrase.lower()
     def get_title(self, story):
-        title = story.get_title().lower() 
-        print(title)
+        title = story.get_title().lower()
+        blanks = [' '] * len(string.punctuation)
+        title = title.translate(" ", string.punctuation)
+        title = ' '.join(title.split())
+        
+ 
         return title
     def evaluate(self, story):
         gt = self.get_title(story)
         if self.phrase in gt:
+            print("We are in")
             return(True) 
         else:
             return(False)
-        # return(self)
+        
 
 # Problem 4
 # TODO: DescriptionTrigger
