@@ -116,12 +116,14 @@ class PhraseTrigger(Trigger):
 # Problem 3
 # TODO: TitleTrigger
 class TitleTrigger(Trigger):
-    def __init__(phrase):
-        self.phrase = phrase
-    def get_title(story):
-        return story.get_title()  
+    def __init__(self, phrase):
+        self.phrase = phrase.lower()
+    def get_title(self, story):
+        title = story.get_title().lower() 
+        print(title)
+        return title
     def evaluate(self, story):
-        gt = get_title(story)
+        gt = self.get_title(story)
         if self.phrase in gt:
             return(True) 
         else:
