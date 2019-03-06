@@ -3,6 +3,7 @@
 # Collaborators:
 # Time:
 
+import re
 import string
 import feedparser
 import time
@@ -118,21 +119,28 @@ class PhraseTrigger(Trigger):
 class TitleTrigger(Trigger):
     def __init__(self, phrase):
         self.phrase = phrase.lower()
-    def get_title(self, story):
-        title = story.get_title().lower()
-        blanks = [' '] * len(string.punctuation)
+    def process_title(self, title):
+        title = title.lower()
+        print(title)
+
         title = title.translate(" ", string.punctuation)
-        title = ' '.join(title.split())
+        title = re.sub(' +', ' ', title)
+
+        print(title)
         
  
         return title
     def evaluate(self, story):
-        gt = self.get_title(story)
-        if self.phrase in gt:
+        
+        gt = story.get_title()
+        gtp = self.process_title(gt)
+        if self.phrase in gtp:
             print("We are in")
-            return(True) 
+            return True
+            
         else:
-            return(False)
+            print("We are out")
+            return False
         
 
 # Problem 4
