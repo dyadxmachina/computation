@@ -225,13 +225,37 @@ class AfterTrigger(TimeTrigger):
 # COMPOSITE TRIGGERS
 
 # Problem 7
-# TODO: NotTrigger
+class NotTrigger(Trigger):
+    def __init__(self, trigger):
+        self.trigger = trigger
+    def invert_trigger(self, story):
+        return not self.trigger.evaluate(story)
+    def evaluate(self, story):
+        return self.invert_trigger(story)
 
 # Problem 8
-# TODO: AndTrigger
+class AndTrigger(Trigger):
+    def __init__(self, trigger1, trigger2):
+        self.trigger1 = trigger1
+        self.trigger2 = trigger2
+    def trigger_both(self, story):
+        trig_1 = self.trigger1.evaluate(story)
+        trig_2 = self.trigger2.evaluate(story)
+        return trig_1 & trig_2
+    def evaluate(self, story):
+        return self.trigger_both(story)
 
 # Problem 9
-# TODO: OrTrigger
+class OrTrigger(Trigger):
+    def __init__(self, trigger1, trigger2):
+        self.trigger1 = trigger1
+        self.trigger2 = trigger2
+    def trigger_both(self, story):
+        trig_1 = self.trigger1.evaluate(story)
+        trig_2 = self.trigger2.evaluate(story)
+        return trig_1 | trig_2
+    def evaluate(self, story):
+        return self.trigger_both(story)
 
 
 #======================
@@ -246,9 +270,12 @@ def filter_stories(stories, triggerlist):
     Returns: a list of only the stories for which a trigger in triggerlist fires.
     """
     # TODO: Problem 10
-    # This is a placeholder
-    # (we're just returning all the stories, with no filtering)
-    return stories
+    fire_stories = []
+    for story in stories: 
+        for trigger in triggerlist:
+            if trigger.evaluate(story):
+                fire_stories.append(story)
+    return fire_stories
 
 
 
