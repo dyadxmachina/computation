@@ -293,6 +293,14 @@ def read_trigger_config(filename):
     # We give you the code to read in the file and eliminate blank lines and
     # comments. You don't need to know how it works for now!
     trigger_file = open(filename, 'r')
+    triggers = {'DESCRIPTION':DescriptionTrigger,
+                'TITLE': TitleTrigger,
+                'AFTER': AfterTrigger,
+                'BEFORE': BeforeTrigger,
+                'NOT': NotTrigger,
+                'AND': AndTrigger,
+                'OR': OrTrigger}
+    config_trigs = {}
     lines = []
     for line in trigger_file:
         line = line.rstrip()
@@ -300,9 +308,17 @@ def read_trigger_config(filename):
             lines.append(line)
 
     # TODO: Problem 11
+    
     # line is the list of lines that you need to parse and for which you need
     # to build triggers
-
+    for line in lines: 
+        eles = line.split(',')
+        trig_name = eles[0]
+        args = eles[2:]
+        if trig_name != 'ADD':
+            if trig_name[1] in triggers.keys():
+                config_trigs[trig_name] = triggers[trig_name[1]](str(arg) for arg in args)
+            else:
     print(lines) # for now, print it so you see what it contains!
 
 
