@@ -335,7 +335,7 @@ def main_thread(master):
     # A sample trigger list - you might need to change the phrases to correspond
     # to what is currently in the news
     cwd = os.getcwd()
-    path = os.path.join(cwd, 'section 5/pset5hw/triggers.txt')
+    path = os.path.join(cwd, 'section 5/pset5hw/hw.txt')
     try:
         t1 = TitleTrigger("election")
         t2 = DescriptionTrigger("Trump")
