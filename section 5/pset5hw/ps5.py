@@ -11,7 +11,7 @@ from project_util import translate_html
 from mtTkinter import *
 from datetime import datetime
 import pytz
-
+import os
 #-----------------------------------------------------------------------
 
 #======================
@@ -323,7 +323,7 @@ def read_trigger_config(filename):
             else:
                 raise ValueError
         else: 
-            triggers.append(config_tris[tg] for tg in eles[1:])
+            triggers.append(config_trigs[tg] for tg in eles[1:])
 
     print(lines) # for now, print it so you see what it contains!
     return triggers
@@ -334,6 +334,8 @@ SLEEPTIME = 120 #seconds -- how often we poll
 def main_thread(master):
     # A sample trigger list - you might need to change the phrases to correspond
     # to what is currently in the news
+    cwd = os.getcwd()
+    path = os.path.join(cwd, 'section 5/pset5hw/triggers.txt')
     try:
         t1 = TitleTrigger("election")
         t2 = DescriptionTrigger("Trump")
@@ -343,7 +345,7 @@ def main_thread(master):
 
         # Problem 11
         # TODO: After implementing read_trigger_config, uncomment this line 
-        # triggerlist = read_trigger_config('triggers.txt')
+        triggerlist = read_trigger_config(path)
         
         # HELPER CODE - you don't need to understand this!
         # Draws the popup window that displays the filtered stories
