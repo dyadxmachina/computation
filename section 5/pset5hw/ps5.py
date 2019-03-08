@@ -307,7 +307,8 @@ def read_trigger_config(filename):
         line = line.rstrip()
         if not (len(line) == 0 or line.startswith('//')):
             lines.append(line)
-
+    # print('LINES')
+    # print(lines)
     # TODO: Problem 11
     
     # line is the list of lines that you need to parse and for which you need
@@ -315,17 +316,30 @@ def read_trigger_config(filename):
     for line in lines: 
         eles = line.split(',')
         trig_name = eles[0]
-        
-        if trig_name != 'ADD':
+        # print('ELES')
+        # print(eles)
+        if trig_name not in ['ADD','OR','NOT']:
             args = eles[2:]
-            if trig_name[1] in trig_map.keys():
-                config_trigs[trig_name] = trig_map[trig_name[1]](str(arg) for arg in args)
-            else:
+            # print('TRIG_NAME')
+            # print(trig_name)
+            if eles[1] in trig_map.keys():
+                if len(args) <=1 :
+                    config_trigs[trig_name] = trig_map[eles[1]](args[0])
+                
+                    print(config_trigs)
+                else: 
+                    trig1, trig2 = (config_trigs[arg] for arg in args)
+                    print(trig1, trig2)
+                    config_trigs[trig_name] = trig_map[eles[1]](trig1, trig2)
+                    
+            elif eles[0] in trig_map.keys():
+                # print("it's ADD")
                 raise ValueError
         else: 
             triggers.append(config_trigs[tg] for tg in eles[1:])
-
-    print(lines) # for now, print it so you see what it contains!
+            # print('TRIGGERS...')
+    print('TRIGGERS') 
+    print(triggers) # for now, print it so you see what it contains!
     return triggers
 
 
@@ -337,6 +351,7 @@ def main_thread(master):
     cwd = os.getcwd()
     path = os.path.join(cwd, 'section 5/pset5hw/hw.txt')
     try:
+        print('TRYING...')
         t1 = TitleTrigger("election")
         t2 = DescriptionTrigger("Trump")
         t3 = DescriptionTrigger("Clinton")
@@ -346,7 +361,7 @@ def main_thread(master):
         # Problem 11
         # TODO: After implementing read_trigger_config, uncomment this line 
         triggerlist = read_trigger_config(path)
-        
+        print('TRIGGERS CALL ...')
         # HELPER CODE - you don't need to understand this!
         # Draws the popup window that displays the filtered stories
         # Retrieves and filters the stories from the RSS feeds
