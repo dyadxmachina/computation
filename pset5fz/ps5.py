@@ -3,8 +3,9 @@
 # Collaborators:
 # Time:
 
-import feedparser
+import re
 import string
+import feedparser
 import time
 import threading
 from project_util import translate_html
@@ -116,17 +117,31 @@ class PhraseTrigger(Trigger):
 # Problem 3
 # TODO: TitleTrigger
 class TitleTrigger(Trigger):
-    def __init__(phrase):
-        self.phrase = phrase
-    def get_title(story):
-        return story.get_title()  
+    def __init__(self, phrase):
+        self.phrase = phrase.lower()
+    def process_title(self, title):
+        title = title.lower()
+        print(title)
+
+        title = title.translate(" ", string.punctuation)
+        title = re.sub(' +', ' ', title)
+
+        print(title)
+        
+ 
+        return title
     def evaluate(self, story):
-        gt = get_title(story)
-        if self.phrase in gt:
-            return(True) 
+        
+        gt = story.get_title()
+        gtp = self.process_title(gt)
+        if self.phrase in gtp:
+            print("We are in")
+            return True
+            
         else:
-            return(False)
-        # return(self)
+            print("We are out")
+            return False
+        
 
 # Problem 4
 # TODO: DescriptionTrigger
