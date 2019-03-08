@@ -322,21 +322,23 @@ def read_trigger_config(filename):
             args = eles[2:]
             # print('TRIG_NAME')
             # print(trig_name)
-            if eles[1] in trig_map.keys():
-                if len(args) <=1 :
-                    config_trigs[trig_name] = trig_map[eles[1]](args[0])
+            # if eles[1] in trig_map.keys():
+            if len(eles) <= 3: 
+                # if len(args) <=1 :
+                config_trigs[trig_name] = trig_map[eles[1]](args[0])
                 
-                    print(config_trigs)
-                else: 
-                    trig1, trig2 = (config_trigs[arg] for arg in args)
-                    print(trig1, trig2)
-                    config_trigs[trig_name] = trig_map[eles[1]](trig1, trig2)
-                    
-            elif eles[0] in trig_map.keys():
-                # print("it's ADD")
-                raise ValueError
+                print(config_trigs)
+            else: 
+                trig1, trig2 = [config_trigs[arg] for arg in args]
+                print(trig1, trig2)
+                config_trigs[trig_name] = trig_map[eles[1]](trig1, trig2)
+                
+            # elif eles[0] in trig_map.keys():
+            #     # print("it's ADD")
+            #     raise ValueError
         else: 
-            triggers.append(config_trigs[tg] for tg in eles[1:])
+            trig1, trig2 = [config_trigs[arg] for arg in args]
+            triggers.extend((trig1, trig2))
             # print('TRIGGERS...')
     print('TRIGGERS') 
     print(triggers) # for now, print it so you see what it contains!
