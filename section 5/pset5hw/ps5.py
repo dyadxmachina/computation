@@ -11,7 +11,7 @@ from project_util import translate_html
 from mtTkinter import *
 from datetime import datetime
 import pytz
-
+import os
 #-----------------------------------------------------------------------
 
 #======================
@@ -162,33 +162,100 @@ class TitleTrigger(PhaseTrigger):
         return self.check_title(story)
 
 
-
-
 # Problem 4
-# TODO: DescriptionTrigger
+class DescriptionTrigger(PhaseTrigger):
+    def __init__(self, phase):
+        self.phase = phase
+    def check_description(self, story):
+        descrip = story.get_description()
+        return self.is_phase_in(descrip)
+    def evaluate(self, story):
+        return self.check_description(story)
 
 # TIME TRIGGERS
 
 # Problem 5
-# TODO: TimeTrigger
+class TimeTrigger(Trigger):
 # Constructor:
 #        Input: Time has to be in EST and in the format of "%d %b %Y %H:%M:%S".
 #        Convert time from string to a datetime before saving it as an attribute.
 
+    def __init__(self,time):
+        self.time = datetime.strptime(time, '%d %b %Y %H:%M:%S') 
+
+    def convert_time(self, story_time):
+        # conv_time = story_time.replace(tzinfo=pytz.timezone("EST"))
+        conv_time = story_time.replace(tzinfo=None)
+        return conv_time
+        # if self.time == conv_time: 
+        #     return True
+        # else: 
+        #     return False
+
+
 # Problem 6
-# TODO: BeforeTrigger and AfterTrigger
+class BeforeTrigger(TimeTrigger):
+    def __init__(self, trigger_time):
+        self.time = datetime.strptime(trigger_time, '%d %b %Y %H:%M:%S') 
+    def beforetrigger(self, story):
+        story_time = self.convert_time(story.get_pubdate())
+        print('STORY TIME: ', story_time)
+        print('TRIGGER TIME: ', self.time)
+        return story_time < self.time
+        #     return True
+        # else: 
+        #     return False
+    def evaluate(self, story):
+        return self.beforetrigger(story)
+
+
+class AfterTrigger(TimeTrigger):
+    def __init__(self, trigger_time):
+        self.time = datetime.strptime(trigger_time, '%d %b %Y %H:%M:%S') 
+    def aftertrigger(self, story):
+        story_time = self.convert_time(story.get_pubdate())
+        return story_time > self.time 
+        #     return True
+        # else: 
+        #     return False
+    def evaluate(self, story):
+        return self.aftertrigger(story)
 
 
 # COMPOSITE TRIGGERS
 
 # Problem 7
-# TODO: NotTrigger
+class NotTrigger(Trigger):
+    def __init__(self, trigger):
+        self.trigger = trigger
+    def invert_trigger(self, story):
+        return not self.trigger.evaluate(story)
+    def evaluate(self, story):
+        return self.invert_trigger(story)
 
 # Problem 8
-# TODO: AndTrigger
+class AndTrigger(Trigger):
+    def __init__(self, trigger1, trigger2):
+        self.trigger1 = trigger1
+        self.trigger2 = trigger2
+    def trigger_both(self, story):
+        trig_1 = self.trigger1.evaluate(story)
+        trig_2 = self.trigger2.evaluate(story)
+        return trig_1 & trig_2
+    def evaluate(self, story):
+        return self.trigger_both(story)
 
 # Problem 9
-# TODO: OrTrigger
+class OrTrigger(Trigger):
+    def __init__(self, trigger1, trigger2):
+        self.trigger1 = trigger1
+        self.trigger2 = trigger2
+    def trigger_both(self, story):
+        trig_1 = self.trigger1.evaluate(story)
+        trig_2 = self.trigger2.evaluate(story)
+        return trig_1 | trig_2
+    def evaluate(self, story):
+        return self.trigger_both(story)
 
 
 #======================
@@ -203,9 +270,12 @@ def filter_stories(stories, triggerlist):
     Returns: a list of only the stories for which a trigger in triggerlist fires.
     """
     # TODO: Problem 10
-    # This is a placeholder
-    # (we're just returning all the stories, with no filtering)
-    return stories
+    fire_stories = []
+    for story in stories: 
+        for trigger in triggerlist:
+            if trigger.evaluate(story):
+                fire_stories.append(story)
+    return fire_stories
 
 
 
@@ -223,18 +293,56 @@ def read_trigger_config(filename):
     # We give you the code to read in the file and eliminate blank lines and
     # comments. You don't need to know how it works for now!
     trigger_file = open(filename, 'r')
+    trig_map = {'DESCRIPTION':DescriptionTrigger,
+                'TITLE': TitleTrigger,
+                'AFTER': AfterTrigger,
+                'BEFORE': BeforeTrigger,
+                'NOT': NotTrigger,
+                'AND': AndTrigger,
+                'OR': OrTrigger}
+    config_trigs = {}
+    triggers = []
     lines = []
     for line in trigger_file:
         line = line.rstrip()
         if not (len(line) == 0 or line.startswith('//')):
             lines.append(line)
-
+    # print('LINES')
+    # print(lines)
     # TODO: Problem 11
+    
     # line is the list of lines that you need to parse and for which you need
     # to build triggers
-
-    print(lines) # for now, print it so you see what it contains!
-
+    for line in lines: 
+        eles = line.split(',')
+        trig_name = eles[0]
+        # print('ELES')
+        # print(eles)
+        if trig_name not in ['ADD','OR','NOT']:
+            args = eles[2:]
+            # print('TRIG_NAME')
+            # print(trig_name)
+            # if eles[1] in trig_map.keys():
+            if len(eles) <= 3: 
+                # if len(args) <=1 :
+                config_trigs[trig_name] = trig_map[eles[1]](args[0])
+                
+                print(config_trigs)
+            else: 
+                trig1, trig2 = [config_trigs[arg] for arg in args]
+                print(trig1, trig2)
+                config_trigs[trig_name] = trig_map[eles[1]](trig1, trig2)
+                
+            # elif eles[0] in trig_map.keys():
+            #     # print("it's ADD")
+            #     raise ValueError
+        else: 
+            trig1, trig2 = [config_trigs[arg] for arg in args]
+            triggers.extend((trig1, trig2))
+            # print('TRIGGERS...')
+    print('TRIGGERS') 
+    print(triggers) # for now, print it so you see what it contains!
+    return triggers
 
 
 SLEEPTIME = 120 #seconds -- how often we poll
@@ -242,7 +350,10 @@ SLEEPTIME = 120 #seconds -- how often we poll
 def main_thread(master):
     # A sample trigger list - you might need to change the phrases to correspond
     # to what is currently in the news
+    cwd = os.getcwd()
+    path = os.path.join(cwd, 'section 5/pset5hw/hw.txt')
     try:
+        print('TRYING...')
         t1 = TitleTrigger("election")
         t2 = DescriptionTrigger("Trump")
         t3 = DescriptionTrigger("Clinton")
@@ -251,8 +362,8 @@ def main_thread(master):
 
         # Problem 11
         # TODO: After implementing read_trigger_config, uncomment this line 
-        # triggerlist = read_trigger_config('triggers.txt')
-        
+        triggerlist = read_trigger_config(path)
+        print('TRIGGERS CALL ...')
         # HELPER CODE - you don't need to understand this!
         # Draws the popup window that displays the filtered stories
         # Retrieves and filters the stories from the RSS feeds
