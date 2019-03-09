@@ -80,14 +80,25 @@ class NewsStory():
     def get_pubdate(self):
         return self.pubdate
     
-
-
-
 #======================
 # Triggers
 #======================
 
 class Trigger(object):
+    def is_phrase_in(self, text):
+        phrase = self.phrase
+        search = re.search(r"\b{}\b".format(phrase), text, re.IGNORECASE) is not None
+        return(search)
+
+    def process_text(self, text):
+        text = text.lower()
+         
+        trantab = string.maketrans(string.punctuation,  ' '*len(string.punctuation))
+        text = text.translate(trantab)
+        text = re.sub(' +', ' ', text)
+        
+        return text
+
     def evaluate(self, story):
         """
         Returns True if an alert should be generated
@@ -103,68 +114,89 @@ class Trigger(object):
 class PhraseTrigger(Trigger):
     def __init__(phrase):
         self.phrase = phrase
-
-    def is_phrase_in(self, string):
-        string = string.lower()
-        if string in self.phrase:
-            return True
-        else:
-            return False
-
-
     # def evaluate(self, story):
         # return(self)
 # Problem 3
-# TODO: TitleTrigger
+
 class TitleTrigger(Trigger):
     def __init__(self, phrase):
-        self.phrase = phrase.lower()
-    def process_title(self, title):
-        title = title.lower()
-        print(title)
+        self.phrase = self.process_text(phrase)
 
-        title = title.translate(" ", string.punctuation)
-        title = re.sub(' +', ' ', title)
-
-        print(title)
-        
- 
-        return title
     def evaluate(self, story):
-        
         gt = story.get_title()
-        gtp = self.process_title(gt)
-        if self.phrase in gtp:
-            print("We are in")
-            return True
-            
+        gtp = self.process_text(gt)
+        if self.is_phrase_in(gtp):    
+            return True    
         else:
-            print("We are out")
             return False
         
 
 # Problem 4
 # TODO: DescriptionTrigger
 class DescriptionTrigger(Trigger):
+    def __init__(self, phrase):
+        self.phrase = phrase
+
     def evaluate(self, story):
-        return(self)
+        gt = story.get_description()
+        gtp = self.process_text(gt)
+        if self.is_phrase_in(gtp):    
+            return True    
+        else:
+            return False        
 
 # TIME TRIGGERS
+
+from datetime import datetime
 
 # Problem 5
 # TODO: TimeTrigger
 # Constructor:
 #        Input: Time has to be in EST and in the format of "%d %b %Y %H:%M:%S".
-#        Convert time from string to a datetime before saving it as an attribute.
+#        Convert time from string to a datetime before saving it as an attribute. 
+class TimeTrigger(Trigger):
+    def __init__(self, dtime):
+        self.time = self.convert_time(dtime)
+
+    def convert_time(self, dtime):
+        if isinstance(dtime,str):
+            dtime = datetime.strptime(dtime, '%d %b %Y %H:%M:%S')
+        return(dtime)
 
 # Problem 6
 # TODO: BeforeTrigger and AfterTrigger
+class BeforeTrigger(TimeTrigger):
+    def __init__(self, dtime):
+        self.time = self.convert_time(dtime)
+        
+    def evaluate(self, story):
+        date = self.convert_time(story.get_pubdate())
+        if str(date) < str(self.time):
+            return(True)
+        else:
+            return(False)
 
+class AfterTrigger(TimeTrigger):
+    def __init__(self, dtime):
+        self.time = self.convert_time(dtime)
+        
+    def evaluate(self, story):
+        date = self.convert_time(story.get_pubdate())
+        if str(date) > str(self.time):
+            return(True)
+        else:
+            return(False)            
 
 # COMPOSITE TRIGGERS
 
 # Problem 7
 # TODO: NotTrigger
+class NotTrigger(Trigger):
+    def __init__(Trigger):
+        self.T = Trigger
+    def evaluate(self, story):
+        self.T.evaluate(self)
+
 
 # Problem 8
 # TODO: AndTrigger
